@@ -65,7 +65,7 @@ module DraftPunk
 
       target_model.const_set :ALLOW_PREVIOUS_VERSIONS_TO_BE_CHANGED, allow_previous_versions_to_be_changed.freeze
       if target_model.tracks_approved_version_history?
-        target_model.belongs_to    :current_approved_version, class_name: target_model.name, optional: true
+        target_model.belongs_to    :current_approved_version, class_name: target_model.name
         target_model.has_many      :previous_versions, -> { order(id: :desc) }, class_name: target_model.name, foreign_key: :current_approved_version_id
         target_model.before_update :prevent_previous_versions_from_saving
         target_model.send          :include, Model::PreviousVersionInstanceMethods
@@ -78,7 +78,7 @@ module DraftPunk
       return if target_model.reflect_on_association(:approved_version) || !target_model.column_names.include?('approved_version_id')
       target_model.send       :include, Model::ActiveRecordInstanceMethods
       target_model.send       :include, Model::DraftDiffInstanceMethods
-      target_model.belongs_to :approved_version, class_name: target_model.name, optional: true
+      target_model.belongs_to :approved_version, class_name: target_model.name
       target_model.scope      :approved, -> { where("#{target_model.quoted_table_name}.approved_version_id IS NULL") }
       target_model.has_one    :draft, -> { unscope(where: :approved) }, class_name: target_model.name, foreign_key: :approved_version_id
       target_model.scope      :draft, -> { unscoped.where("#{target_model.quoted_table_name}.approved_version_id IS NOT NULL") }
