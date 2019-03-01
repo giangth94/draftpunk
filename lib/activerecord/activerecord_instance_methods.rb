@@ -154,7 +154,7 @@ module DraftPunk
           attribute_updates = {}
           attribute_updates[reflection.foreign_key] = @live_version.id
           attribute_updates['updated_at']           = Time.now if reflection.klass.column_names.include?('updated_at')
-          attribute_updates['approved_version_id']  = nil if reflection.klass.tracks_approved_version?
+          attribute_updates['approved_version_id']  = nil if association_tracks_approved_version?(assoc)
 
           if reflection_is_has_many(reflection)
             @draft_version.send(assoc).update_all attribute_updates
