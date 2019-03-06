@@ -35,6 +35,8 @@ module DraftPunk
 	private #####################################################################
 
     def model_table_exists?(table_name=@top_level_model.table_name)
+      return false unless ActiveRecord::Base.connected?
+
       if ActiveRecord::Base.connection.respond_to? :data_source_exists?
         ActiveRecord::Base.connection.data_source_exists?(table_name)
       else
